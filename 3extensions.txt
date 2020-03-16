@@ -1,0 +1,9 @@
+# /etc/asterisk/extensions.conf
+
+
+[ramal]
+exten => 20,1,Dial(SIP/20)
+
+exten => 21,1,Dial(SIP/21)
+
+#dialplan reload

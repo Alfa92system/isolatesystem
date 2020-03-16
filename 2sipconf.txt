@@ -1,0 +1,16 @@
+# /etc/asterisk/sip.conf
+
+
+[20]
+type=teste
+context=linha
+secret=senha20
+qualify=yes
+host=dynamic
+
+[21]
+type=teste
+context=linha
+secret=senha21
+qualify=yes
+host=dynamic

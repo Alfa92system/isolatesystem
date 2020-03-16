@@ -1,0 +1,125 @@
+#!/bin/bash
+
+#Criado por Ronaldo Sacco - ronaldo@saperx.com.br - 26/09/2018
+#Script criado para facilitar a instalacao do asterisk, versao 13, por usuarios nao experientes.
+#Use, reuse, venda, melhore. Seja feliz.
+#Atualizacao de Guilherme Matos
+#bibliotecas para asterisk 17 e debian 10
+#versão 17 do asterisk
+#comando sip para ativar o sip reload >> module load chan_sip.so
+
+
+function ok {
+	echo
+	echo
+	echo
+        read -p "$1 [s/n]: " OK
+
+        if [ $OK = 's' -o $OK = 'S' ]
+        then
+                return 0
+        else
+                return 22
+        fi
+}
+
+function option_dependencias {
+        echo "Opcao escolhida: Instalar Dependencias"
+        echo ""
+	
+        ok "Instalar dependencias?" && {
+
+		echo "Instalando dependencias"
+
+		apt update
+
+		apt install aptitude
+
+		aptitude update && aptitude install -y linux-headers-`uname -r`  libssl-dev libncurses-dev libtonezone-dev build-essential libxml2-dev libtiff-dev libnewt-dev fxload libusb-dev libspandsp-dev snoopy libsasl2-modules libtiff-tools portaudio19-dev libsqlite3-dev libjansson-dev uuid-dev unixodbc-dev build-essential git-core subversion libjansson-dev sqlite autoconf automake libxml2-dev libncurses5-dev libtool libsqlite3-dev libedit-dev libedit2
+        }
+
+}
+
+
+
+function option_download_asterisk {
+        echo "Opcao escolhida: Download e Instalacao asterisk"
+        echo ""
+
+        pwd_asterisk=/usr/src
+        asterisk=asterisk-17
+
+
+        ok "Realizar o download do Asterisk?" && {
+                cd $pwd_asterisk
+                wget http://downloads.asterisk.org/pub/telephony/asterisk/$asterisk-current.tar.gz
+        }
+
+        ok "Descompactar Asterisk?" && {
+                tar -vzxf $pwd_asterisk/asterisk-17-current.tar.gz
+        }
+
+        ok "Instalar asterisk" && {
+                cd $pwd_asterisk/$asterisk.*
+                make clean; 
+		./configure && make && make install && make samples && make config
+        }
+}
+
+
+function option_finalizacao {
+	echo "Finalizando..."
+
+	echo "Confs do asterisk em /etc/asterisk"
+
+	echo "..Tudo pronto! Starte o asterisk (comando: safe_asterisk) e depois acesse-o com o comando: asterisk -r"
+
+	
+	exit 0
+}
+
+
+#------------------------------------------------------------------------------
+
+clear
+
+while true
+do
+	echo ""
+	echo ""
+
+	echo "---------------------------------------------------------------"
+	echo "--------------INSTALACAO ASTERISK VERSAO 17.x------------------"
+	echo "---------------- Saperx Projetos de Telecom -------------------"
+	echo "--------------------ronaldo@saperx.com.br----------------------"
+        echo "-----------------Atualizado por Guilherme Matos----------------"
+	echo "---------------------------------------------------------------"
+	
+	read -p "
+Escolha uma opcao (Realizar na ordem abaixo)
+
+1 - Instalar Dependencias
+2 - Download e Instalacao Asterisk
+
+0 - Finalizacao
+	
+Escolha: " OPCAO
+	
+	case $OPCAO in
+	1)
+		option_dependencias
+	;;
+
+	2)
+	        option_download_asterisk
+	;;
+
+	0)
+		option_finalizacao
+	;;
+
+	*)
+	        echo "OPCAO INVALIDA";;
+	
+	esac
+done
